@@ -2,8 +2,8 @@ import os
 import datetime
 import shutil #Use shutil instead of os.rename because files from external harddrive
 outputFolder = os.getcwd() + "/Organized"
-video_set = {".mp4", ".c4d", ".mov"}
-picture_set = {".jpeg", ".png", ".raw"}
+video_set = {".mp4", ".c4d", ".mov", ".avi", ".wmv"}
+picture_set = {".jpeg", ".png", ".raw", ".pdf", ".tiff", ".gif"}
 
 def main():
     pathInput = input("Please enter directory to look through: ")
@@ -18,6 +18,7 @@ def main():
             dateCreated = datetime.datetime.fromtimestamp(x.st_ctime)    
             createDateFolders(filePath, dateCreated)
 
+# Creates the Year and Month subdirectories based on time created
 def createDateFolders(filePath, dateCreated):
     fileMonth = dateCreated.strftime("%B")
     fileYear = dateCreated.year
@@ -30,6 +31,7 @@ def createDateFolders(filePath, dateCreated):
         os.makedirs(newMonthFolder)
     createMediaFolders(filePath, newMonthFolder)
 
+# Creates the media folders (Photo, Video) and moves the file accordingly
 def createMediaFolders(filePath, directory):
     fullPath, extension = os.path.splitext(filePath)
     if extension in video_set:
@@ -42,5 +44,11 @@ def createMediaFolders(filePath, directory):
         if not os.path.exists(newPictureFolder):
             os.makedirs(newPictureFolder)
         shutil.copy2(filePath, newPictureFolder)
+    else: 
+        newOtherFolder = os.path.join(directory, "Other")
+        if not os.path.exists(newOtherFolder):
+            os.makedirs(newOtherFolder)
+        shutil.copy2(filePath, newOtherFolder)
+        
 
 main()
